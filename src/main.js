@@ -16,8 +16,6 @@ Vue.prototype.$dayjs = dayjs
 
 Vue.prototype.$axios = axios
 
-console.log('process.env.VUE_APP_API_URL->', process.env.VUE_APP_API_URL)
-
 Vue.use(VueToast, {
   position: 'top-right'
 })
