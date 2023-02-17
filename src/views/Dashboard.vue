@@ -26,7 +26,7 @@ export default {
     return { events: 'Loading events...' }
   },
   created() {
-    // axios.get('//localhost:3002/api/dashboard').then(({ data }) => {
+    // axios.get(process.env.VUE_APP_API_URL + 'api/dashboard').then(({ data }) => {
     //   console.log('Dashboard data->', data)
 
     //   const testData = {

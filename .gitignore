@@ -1,39 +1,37 @@
-# Ignore virtual environments
-venv/
-env/
-ENV/
+# dependencies
+/node_modules
+/.pnp
+.pnp.js
 
-# Ignore Python bytecode files
-*.pyc
-*.pyo
-__pycache__/
+# build output
+/dist
+/build
+.DS_Store
 
-# Ignore IDE and editor files
+# local development env files
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# IDE files
 .vscode/
-*.idea/
+.idea/
 *.iml
-*.ipr
-*.iws
-*.bak
-*.swp
-*~
 
-# Ignore log files
-logs/
-*.log
+# log files
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
 
-# Ignore database files
-db.sqlite3
+# user preferences and cache
+/.npm
+/.yarn
+.cache/
+.npmrc
+yarn.lock
+package-lock.json
 
-# Ignore compiled binaries
-*.exe
-*.pyd
-*.dll
-*.so
-*.dylib
-
-# Ignore dependencies and build artifacts
-node_modules/
-build/
-dist/
-test233/
+# OS files
+.DS_Store
+Thumbs.db

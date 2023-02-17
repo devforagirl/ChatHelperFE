@@ -518,7 +518,7 @@ export default new Vuex.Store({
     action_login({ commit }, credentials) {
       console.log('action_login()-credentials->', credentials)
       return axios
-        .post('//localhost:3002/api/login', credentials)
+        .post(process.env.VUE_APP_API_URL + 'api/login', credentials)
         .then(({ data }) => {
           console.log('action_login()-data->', data)
           commit('mutation_set_userInfoData', data)
@@ -528,7 +528,7 @@ export default new Vuex.Store({
     action_register({ commit }, credentials) {
       console.log('action_register()-credentials->', credentials)
       return axios
-        .post('//localhost:3002/api/register', credentials)
+        .post(process.env.VUE_APP_API_URL + 'api/register', credentials)
         .then(({ data }) => {
           console.log('action_register()->data->', data)
           commit('mutation_set_userInfoData', data)
@@ -539,7 +539,7 @@ export default new Vuex.Store({
     },
     dashboard({ commit }, credentials) {
       return axios
-        .get('//localhost:3002/api/dashboard', credentials)
+        .get(process.env.VUE_APP_API_URL + 'api/dashboard', credentials)
         .then(({ data }) => {
           console.log('dashboard()->data->', data)
           commit('set_userAppData', data)
@@ -565,7 +565,7 @@ export default new Vuex.Store({
     action_get_viewerChats(context, viewerId) {
       context.commit('SET_VIEWER_CHAT_DATA', [])
 
-      axios.get('//localhost:3002/api/u2bviewer', {
+      axios.get(process.env.VUE_APP_API_URL + 'api/u2bviewer', {
         params: {
           'viewer_channel_id': viewerId
         }
@@ -599,7 +599,7 @@ export default new Vuex.Store({
         })
     },
     saveToDb_userSettings(context) {
-      axios.post('//localhost:3002/api/settings', context.state.user_settings)
+      axios.post(process.env.VUE_APP_API_URL + 'api/settings', context.state.user_settings)
         .then((response) => {
           if (response.status === 200) {
             console.log('Settings update succeeded->', response)
