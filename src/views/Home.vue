@@ -1,67 +1,66 @@
 <template>
-  <div class="home">
-    <div>Home.vue</div>
-    <div v-if="!user_info">
-      <div>
-        To use the app, you'll need to
-        <router-link
-          to="authenticate"
-          @click.native="isNew(false)"
-        >
-          Login
-        </router-link>
-        or
-        <router-link
-          to="authenticate"
-          @click.native="isNew(true)"
-        >
-          Register
-        </router-link>
-      </div>
-    </div>
-    <div
-      v-else
-      class="welcomebackBox"
-    >
-      <span> Welcome back, </span>
-      <b> {{ user_info.name }}</b><br>
-      <router-link to="dashboard"> Go to Dashboard </router-link>
-    </div>
-    <!-- test5
-    <v-divider />
-    <div class="testBox">
-      <v-btn @click="btnClickConn">conn</v-btn>
-      <v-btn @click="btnClickEmit">emit</v-btn>
-      <v-btn @click="btnClickDisc">disc</v-btn>
-    </div> -->
+  <div class="centered-input">
+    <v-container fluid>
+      <v-row justify="center">
+        <v-col cols="12" sm="8" md="4">
+          <v-text-field v-model="inputValue" label="Open Sesame!" />
+        </v-col>
+      </v-row>
+      <div>{{ decode }}</div>
+    </v-container>
+
+    <v-container>
+      <v-row>
+        <v-col cols="12">
+          <v-text-field
+            v-model="videoIdAddress"
+            :rules="[rules.required, rules.min]"
+            filled
+            clear-icon="mdi-close-circle"
+            clearable
+            label="Video Address"
+            type="text"
+            @click:append-outer="sendVid"
+            @click:clear="clearMessage"
+          />
+        </v-col>
+      </v-row>
+    </v-container>
   </div>
 </template>
 
 <script>
-import { mapState } from 'vuex'
-
 export default {
-  computed: {
-    ...mapState(['user_info'])
+  data() {
+    return {
+      inputValue: "",
+    };
   },
   methods: {
-    isNew(isNewUser) { this.$store.dispatch('isNewUser', !isNewUser) }
-
-    // // test5
-    // btnClickConn() {
-    //   console.log('btnClickConn-initializeSocket')
-    //   this.$store.dispatch('initializeSocket')
-    // },
-
-    // btnClickEmit() {
-    //   console.log('btnClickEmit-emit5')
-    //   this.$store.dispatch('emit5')
-    // },
-
-    // btnClickDisc() {
-    //   this.$store.dispatch('disconnectSocket')
-    //   console.log('btnClickDisc')
-    // }
+    clearMessage() {
+      this.$store.commit("set_videoIdAddress", "")
+    },
+    sendVid() {
+      this.$store.dispatch("action_updateVideoId", this.videoIdAddress)
+    }
   }
+  // computed: {
+  //   decode() {
+  //     if (this.inputValue === process.env.VUE_APP_SESAME) {
+  //       // console.log('inputValue->', this.inputValue)
+  //       this.$router.push('authenticate')
+  //     }
+  //     return '233'
+  //   }
+  // }
 }
 </script>
+
+<style>
+.centered-input {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+</style>
