@@ -1,4 +1,17 @@
 {
   "semi": false,
-  "singleQuote": true
+  "singleQuote": true,
+  "trailingComma": "none",
+  "vueIndentScriptAndStyle": true,
+  "htmlWhitespaceSensitivity": "ignore",
+  "htmlVoidTags": [],
+  "endOfLine": "auto",
+  "overrides": [
+    {
+      "files": "*.vue",
+      "options": {
+        "vueIndentScriptAndStyle": false
+      }
+    }
+  ]
 }
