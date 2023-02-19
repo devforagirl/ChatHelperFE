@@ -20,10 +20,9 @@
               <div v-else class="welcomebackBox">
                 <span>Welcome back,</span>
                 <b>{{ user_info.name }}</b>
-                <br>
-                <span>
-                  If you can see this message, your Localstorage was not cleaned successfully.
-                </span>
+                <br><br>
+                <div>If you can see this message,</div>
+                <div>'Localstorage' was not cleaned successfully.</div>
                 <br>
                 <router-link to="dashboard">Go to Dashboard</router-link>
               </div>
