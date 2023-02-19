@@ -10,7 +10,8 @@
       v-show="!isNewUser"
       class="auth-link"
       @click="toggleComponent"
-    >Already have an account? Login.</a>
+    >
+      Already have an account? Login.</a>
   </div>
 </template>
 
@@ -31,6 +32,8 @@ export default {
   methods: {
     toggleComponent() {
       this.$store.dispatch('isNewUser', !this.isNewUser)
+      console.log('123432asd4')
+      console.log('123123')
     }
   }
 }
