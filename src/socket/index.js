@@ -3,7 +3,8 @@ import io from 'socket.io-client'
 import VueSocketIOExt from 'vue-socket.io-extended'
 
 export default function createSocketConnection(store) {
-  const socket = io('/')
+  // const socket = io('/')
+  const socket = io('https://chat-helper-be-2.vercel.app')
   Vue.use(VueSocketIOExt, socket)
 
   socket.on('my_event', (data) => {
