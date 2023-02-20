@@ -5,13 +5,13 @@ module.exports = {
   devServer: {
     disableHostCheck: true,
     proxy: {
-      '/socket.io': {
-        // target: 'http://127.0.0.1:5000',
-        // target: 'https://chat-helper-be-2.vercel.app', 好像没做用了
-        target: 'https://nba.com',
+      // '/socket.io': {
+      //   // target: 'http://127.0.0.1:5000',
+      //   // target: 'https://chat-helper-be-2.vercel.app', 好像没做用了
+      //   target: 'https://nba.com',
 
-        changeOrigin: true
-      }
+      //   changeOrigin: true
+      // }
     }
   }
 }
