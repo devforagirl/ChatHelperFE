@@ -5,9 +5,10 @@ module.exports = {
   devServer: {
     disableHostCheck: true,
     proxy: {
+      // 本地开发时使用的
       // '/socket.io': {
       //   // target: 'http://127.0.0.1:5000',
-      //   // target: 'https://chat-helper-be-2.vercel.app', 好像没做用了
+      //   // target: 'https://chat-helper-be-2.vercel.app', 
       //   target: 'https://nba.com',
 
       //   changeOrigin: true
