@@ -263,8 +263,6 @@ export default new Vuex.Store({
     }
   },
   actions: {
-    // test5
-
     // connect
     initializeSocket({ dispatch, commit, state }) {
       const socket = createSocketConnection({ dispatch, commit, state })
@@ -273,7 +271,7 @@ export default new Vuex.Store({
 
       dispatch('action_userEnter')
 
-      console.log('VUE-initializeSocket end')
+      console.log('VUEX-initializeSocket')
     },
 
     // disconnect
@@ -285,194 +283,89 @@ export default new Vuex.Store({
 
       context.state.socket.disconnect()
 
-      console.log('VUE-disconnectSocket end')
+      console.log('VUEX-disconnectSocket')
     },
 
-    async action_createChatObject(context) {
-      // 检查connection状态
-      if (!myUtils.utils.socketStatus()) return
-
-      // 执行操作
-      const res1 = await context.state.socket.createChatObject()
-
-      // 查看创建后的状态
-      context.dispatch('action_inspectChatObj')
-
-      // 处理返回值
-      context.dispatch('handleFB', res1)
-    },
-
+    // inspectChatObject
     async action_inspectChatObj(context) {
-      // 检查connection状态
       if (!myUtils.utils.socketStatus()) return
 
-      // 检查chatObj状态
-      const res1 = await context.state.socket.examChatObject()
+      const res1 = await context.state.socket.inspectChatObject()
 
-      // 设置chatObj状态到state
       context.commit('set_chatObjStatus', res1)
 
-      // 处理返回值
       context.dispatch('handleFB', res1)
     },
 
-    async action_getExceptionInfo(context) {
-      // 检查connection状态
+    // createChatObject
+    async action_createChatObject(context) {
       if (!myUtils.utils.socketStatus()) return
 
-      // 检查chatObj状态
-      await context.dispatch('action_inspectChatObj')
+      const res1 = await context.state.socket.createChatObject()
 
-      const status = context.state.chatObjStatus
-
-      if (!status.chatObj_exists) {
-        return Vue.$toast.default('chatObj does NOT exist', { duration: 5000 })
+      if (res1) {
+        Vue.$toast.success('createChatObject succeded')
+      } else {
+        Vue.$toast.error('createChatObject failed')
+        context.dispatch('action_inspectChatObj')
       }
-
-      // 执行操作
-      const res1 = await context.state.socket.getExceptionInfo()
-
-      // 处理返回值
-      context.dispatch('handleFB', res1)
     },
 
-    async action_deleteChatObject(context) {
-      // 检查connection状态
-      if (!myUtils.utils.socketStatus()) return
-
-      // 无需检查chatObj状态
-
-      // 执行操作
-      const res2 = await context.state.socket.deleteChatObject()
-
-      // 处理返回值
-      context.dispatch('handleFB', res2)
-    },
-
-    // ------------------------------------------
-
-    // Actions Receiving Events
-
-    // // 监听user_enter, 通知：有新人进房间了
-    // // nickname，就是进入房间玩家的名字 (小王)
-    // store.commit('addToNicknames', nickname)
-    socket_userEnter({ dispatch, commit }, beVal) {
-      console.log('VUEX socket_userEnter()-val->', beVal)
-    },
-
-    // // 将离开的人，从vuex nicknames中移除该项
-    // store.commit('delFromNicknames', nickname)
-    socket_userLeave({ dispatch, commit }, beVal) {
-      console.log('VUEX socket_userLeave()-val->', beVal)
-    },
-
-    socket_customEmit({ dispatch, commit }, beVal) {
-      console.log('VUEX socket_customEmit()-val->', beVal)
-    },
-
-    // Actions Emitting Events
-
-    // 开始获取chat数据
-    async initProcess(context) {
-      // 检查connection状态
-      if (!myUtils.utils.socketStatus()) return
-
-      // 检查chatObj状态
-      await context.dispatch('action_inspectChatObj')
-
-      const status = context.state.chatObjStatus
-
-      if (!status.chatObj_exists) {
-        return Vue.$toast.default('chatObj does NOT exist', { duration: 5000 })
-      } else if (status.flag_is_alive !== true) {
-        return Vue.$toast.default('flag_is_alive is NOT true', { duration: 5000 })
-      }
-
-      // 执行操作
-      const def_params = {
-        'currentVid': context.state.videoIdAddress,
-        'chatsSpeed': context.state.user_settings.chatsSpeed
-      }
-
-      const res1 = await context.state.socket.initProcess(def_params)
-
-      // 处理返回值
-      context.dispatch('handleFB', res1)
-
-      // 继续执行获取操作startProcess
-      const res2 = await context.state.socket.startProcess()
-
-      console.log('startProcess END-res2->', res2)
-    },
-
-    // 停止获取chat数据
+    // terminateProcess
     async action_terminateProcess(context) {
-      // 检查connection状态
       if (!myUtils.utils.socketStatus()) return
 
-      // 检查chatObj状态
-      await context.dispatch('action_inspectChatObj')
-
-      const status = context.state.chatObjStatus
-
-      if (!status.chatObj_exists) {
-        return Vue.$toast.default('chatObj does NOT exist', { duration: 5000 })
-      }
-
-      // 执行操作
       const res1 = await context.state.socket.terminateProcess()
 
-      console.log('terminateProcess-res1->', res1)
-
-      // 处理返回值
-      context.dispatch('handleFB', res1)
+      if (res1) {
+        Vue.$toast.success('terminateProcess succeded')
+      } else {
+        Vue.$toast.error('terminateProcess failed')
+        context.dispatch('action_inspectChatObj')
+      }
     },
 
-    // 改变pytchat的IsAlive的标志
-    async action_pauseAlive(context, bool) {
-      // 检查connection状态
+    // startProcess
+    async startProcess(context) {
       if (!myUtils.utils.socketStatus()) return
 
-      // 检查chatObj状态
-      await context.dispatch('action_inspectChatObj')
+      const res1 = await context.state.socket.startProcess()
 
-      const status = context.state.chatObjStatus
-
-      if (!status.chatObj_exists) {
-        return Vue.$toast.default('chatObj does NOT exist', { duration: 5000 })
+      if (res1) {
+        Vue.$toast.success('startProcess succeded')
+      } else {
+        Vue.$toast.error('startProcess failed')
+        context.dispatch('action_inspectChatObj')
       }
-
-      // 执行操作
-      const res1 = await context.state.socket.pauseAlive(bool)
-
-      // 处理返回值
-      context.dispatch('handleFB', res1)
     },
 
-    // 设置后台留言获取速度
+    // updateChatSpeed
     async action_updatechatsSpeed(context, seconds) {
-      // 设定数据到vuex
       context.commit('set_chatsSpeed', seconds)
 
-      // 检查connection状态
       if (!myUtils.utils.socketStatus()) return
 
-      // 执行操作
       const res1 = await context.state.socket.updateChatSpeed(seconds)
-
-      // 处理返回值
-      context.dispatch('handleFB', res1)
+      if (res1) {
+        Vue.$toast.success('updateChatSpeed succeded')
+      } else {
+        Vue.$toast.error('updateChatSpeed failed')
+        context.dispatch('action_inspectChatObj')
+      }
     },
 
+    // updateVid
     async action_updateVideoId(context, id) {
-      // 检查connection状态
       if (!myUtils.utils.socketStatus()) return
 
-      // 执行操作
       const res1 = await context.state.socket.updateVid(id)
 
-      // 处理返回值
-      context.dispatch('handleFB', res1)
+      if (res1) {
+        Vue.$toast.success('updateVid succeded')
+      } else {
+        Vue.$toast.error('updateVid failed')
+        context.dispatch('action_inspectChatObj')
+      }
     },
 
     async action_userEnter(context) {
@@ -501,8 +394,8 @@ export default new Vuex.Store({
     },
 
     action_exit(context) {
-      // 1 delete chatObj
-      context.dispatch('action_deleteChatObject')
+      // 1 terminate chatObj
+      context.dispatch('action_terminateProcess')
 
       // 2 disconnect with server
       context.dispatch('disconnectSocket')
@@ -512,6 +405,25 @@ export default new Vuex.Store({
 
       // 4 delete localStorage data
       context.commit('mutation_exit')
+    },
+
+    // Actions Receiving Events
+
+    // // 监听user_enter, 通知：有新人进房间了
+    // // nickname，就是进入房间玩家的名字 (小王)
+    // store.commit('addToNicknames', nickname)
+    socket_userEnter({ dispatch, commit }, beVal) {
+      console.log('VUEX socket_userEnter()-val->', beVal)
+    },
+
+    // // 将离开的人，从vuex nicknames中移除该项
+    // store.commit('delFromNicknames', nickname)
+    socket_userLeave({ dispatch, commit }, beVal) {
+      console.log('VUEX socket_userLeave()-val->', beVal)
+    },
+
+    socket_customEmit({ dispatch, commit }, beVal) {
+      console.log('VUEX socket_customEmit()-val->', beVal)
     },
 
     // 登录页面 action_login
@@ -659,17 +571,19 @@ export default new Vuex.Store({
 
     handleFB(context, beRes) {
       switch (beRes.req_name) {
-        case 'initProcess': {
-          context.commit('set_videoType', beRes.vid_is_replay)
+        case 'startProcess': {
+          // 暂无任何返回值
 
-          const html1 =
-            '<b>' + beRes.req_name + '</b><br>' +
-            '<div>chatsSpeed: ' + beRes.chatsSpeed + '</div>' +
-            '<div>currentVid: ' + beRes.currentVid + '</div>' +
-            '<div>vid_is_replay: ' + beRes.vid_is_replay + '</div>' +
-            '<div>ID: ' + beRes.chatObj_id + '</div>'
+          // context.commit('set_videoType', beRes.vid_is_replay)
 
-          Vue.$toast.info(html1, { duration: 5000 })
+          // const html1 =
+          //   '<b>' + beRes.req_name + '</b><br>' +
+          //   '<div>chatsSpeed: ' + beRes.chatsSpeed + '</div>' +
+          //   '<div>currentVid: ' + beRes.currentVid + '</div>' +
+          //   '<div>vid_is_replay: ' + beRes.vid_is_replay + '</div>' +
+          //   '<div>ID: ' + beRes.chatObj_id + '</div>'
+
+          // Vue.$toast.info(html1, { duration: 5000 })
 
           break
         }
@@ -683,19 +597,6 @@ export default new Vuex.Store({
             '<div>ID: ' + beRes.chatObj_id + '</div>'
 
           Vue.$toast.info(html1, { duration: 5000 })
-          break
-        }
-
-        case 'pauseAlive': {
-          const class_alive = beRes.flag_is_alive ? '' : ' style="background:purple;"'
-
-          const html1 =
-            '<b>' + beRes.req_name + '</b><br>' +
-            '<div' + class_alive + '>Flag_is_alive: ' + beRes.flag_is_alive + '</div>' +
-            '<div>ID: ' + beRes.chatObj_id + '</div>'
-
-          Vue.$toast.info(html1, { duration: 5000 })
-
           break
         }
 
@@ -732,16 +633,6 @@ export default new Vuex.Store({
           break
         }
 
-        case 'deleteChatObject': {
-          const html1 =
-            '<b>' + beRes.req_name + '</b><br>' +
-            '<div>chatObj_exists: ' + beRes.chatObj_exists + '</div>'
-
-          Vue.$toast.info(html1, { duration: 5000 })
-
-          break
-        }
-
         case 'getExceptionInfo': {
           beRes.type = myUtils.utils.clearString(beRes.type)
 
@@ -771,7 +662,7 @@ export default new Vuex.Store({
           break
         }
 
-        case 'exam_chatObj': {
+        case 'inspectChatObject': {
           // Toast部分，注意style前必须有个空格
           const class_exists = beRes.chatObj_exists ? '' : ' style="background:purple;"'
           const class_alive = beRes.flag_is_alive ? '' : ' style="background:purple;"'

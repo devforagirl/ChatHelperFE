@@ -3,123 +3,76 @@
     <!-- 控制区 -->
     <div class="ControlBtnBox">
       <div class="ControlBtnInnerBox">
-        <!-- flask_socketio -->
-        <div class="btnItemBox">
-          <v-btn
-            color="#20B2AA"
-            @click="btnClickConnSrv"
-          >
-            Conn
-          </v-btn>
-          <div class="descptionBox">
-            Connect server
+        <div class="flex-row">
+          <div class="btnItemBox">
+            <v-btn
+              depressed
+              small
+              color="#20B2AA"
+              @click="btnClickConnSrv"
+            >
+              Conne
+            </v-btn>
+          </div>
+          <div class="btnItemBox">
+            <v-btn
+              depressed
+              small
+              color="#778899"
+              @click="btnClickDiscSrv"
+            >
+              Disco
+            </v-btn>
+          </div>
+          <div class="btnItemBox">
+            <v-btn
+              depressed
+              small
+              color="orange"
+              @click="btnClickOpenUrl"
+            > open</v-btn>
           </div>
         </div>
 
-        <div class="btnItemBox">
-          <v-btn
-            color="#778899"
-            @click="btnClickDiscSrv"
-          >
-            Disc
-          </v-btn>
-          <div class="descptionBox">
-            Disconnect server
+        <div class="flex-row">
+          <div class="btnItemBox">
+            <v-btn
+              depressed
+              small
+              color="yellow"
+              @click="btnClickInspectChatObj"
+            > Inspe</v-btn>
+          </div>
+          <div class="btnItemBox">
+            <v-btn
+              depressed
+              small
+              color="green"
+              @click="btnClickCreateChatObj"
+            > Create</v-btn>
+          </div>
+          <div class="btnItemBox">
+            <v-btn
+              depressed
+              small
+              color="cyan"
+              @click="btnClickStart"
+            >
+              Start
+            </v-btn>
+          </div>
+          <div class="btnItemBox">
+            <v-btn
+              depressed
+              small
+              color="pink"
+              @click="btnClickTerminate"
+            >
+              Termi
+            </v-btn>
           </div>
         </div>
-
         <v-divider />
-
-        <!-- pychat object -->
-        <div class="btnItemBox">
-          <v-btn
-            color="cyan"
-            @click="btnClickStart"
-          >
-            Start
-          </v-btn>
-          <div class="descptionBox">
-            Start fetching
-          </div>
-        </div>
-        <div class="btnItemBox">
-          <v-btn
-            color="pink"
-            @click="btnClickTerminate"
-          >
-            Terminate
-          </v-btn>
-          <div class="descptionBox">
-            flag + finalize
-          </div>
-        </div>
-        <div class="btnItemBox">
-          <v-btn
-            color="#6A5ACD"
-            @click="btnClickPause"
-          >
-            Pause
-          </v-btn>
-          <div class="descptionBox">
-            Pause fetching
-          </div>
-        </div>
-        <div class="btnItemBox">
-          <v-btn
-            color="#bd512f"
-            @click="btnClickResume"
-          >
-            Resume
-          </v-btn>
-          <div class="descptionBox">
-            Resume fetching
-          </div>
-        </div>
-        <div class="btnItemBox">
-          <v-btn
-            color="yellow"
-            @click="btnClickInspectChatObj"
-          > Inspect</v-btn>
-          <div class="descptionBox">
-            Inspect chatObj
-          </div>
-        </div>
-        <div class="btnItemBox">
-          <v-btn
-            color="green"
-            @click="btnClickCreateChatObj"
-          > Create</v-btn>
-          <div class="descptionBox">
-            Create chatObj
-          </div>
-        </div>
-        <div class="btnItemBox">
-          <v-btn
-            color="grey"
-            @click="btnClickDeleteChatObj"
-          > Delete</v-btn>
-          <div class="descptionBox">
-            Delete chatObj
-          </div>
-        </div>
-        <div class="btnItemBox">
-          <v-btn
-            color="red"
-            @click="btnClickGetError"
-          > error</v-btn>
-          <div class="descptionBox">
-            Get error infos
-          </div>
-        </div>
-        <div class="btnItemBox">
-          <v-btn
-            color="orange"
-            @click="btnClickOpenUrl"
-          > open</v-btn>
-          <div class="descptionBox">
-            {{ videoIdAddress }}
-          </div>
-        </div>
       </div>
     </div>
 
@@ -148,7 +101,6 @@
         </v-container>
       </v-form>
     </div>
-
   </div>
 </template>
 
@@ -192,28 +144,16 @@ export default {
       this.$store.dispatch('disconnectSocket')
     },
     btnClickStart() {
-      this.$store.dispatch('initProcess')
+      this.$store.dispatch('startProcess')
     },
     btnClickTerminate() {
       this.$store.dispatch('action_terminateProcess')
-    },
-    btnClickPause() {
-      this.$store.dispatch('action_pauseAlive', false)
-    },
-    btnClickResume() {
-      this.$store.dispatch('action_pauseAlive', true)
     },
     btnClickInspectChatObj() {
       this.$store.dispatch('action_inspectChatObj')
     },
     btnClickCreateChatObj() {
       this.$store.dispatch('action_createChatObject')
-    },
-    btnClickDeleteChatObj() {
-      this.$store.dispatch('action_deleteChatObject')
-    },
-    btnClickGetError() {
-      this.$store.dispatch('action_getExceptionInfo')
     },
     btnClickOpenUrl() {
       if (this.videoIdAddress.length !== 11) {
@@ -251,6 +191,13 @@ export default {
 .ControlBtnInnerBox {
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
+}
+
+.flex-row{
+  /* background-color: rgb(224, 161, 243); */
+  display: flex;
+  flex-direction: row;
   justify-content: space-between;
 }
 

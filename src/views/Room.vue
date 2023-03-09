@@ -10,7 +10,7 @@
 
     <VscrollComp />
 
-    <InvisibleHelperComp />
+    <!-- <InvisibleHelperComp /> -->
   </div>
 </template>
 
@@ -20,7 +20,7 @@ import DialogFrame from '../components/DialogComps/DialogFrame.vue'
 import VscrollComp from '../components/Vscroll.vue'
 import SystemBarComp from '../components/SystemBarComp.vue'
 import FloatingBtnComp from '../components/FloatingBtnComp.vue'
-import InvisibleHelperComp from '../components/InvisibleHelperComp.vue'
+// import InvisibleHelperComp from '../components/InvisibleHelperComp.vue'
 
 export default {
   components: {
@@ -28,8 +28,8 @@ export default {
     VscrollComp,
     DialogFrame,
     SystemBarComp,
-    FloatingBtnComp,
-    InvisibleHelperComp
+    FloatingBtnComp
+    // InvisibleHelperComp
   },
   data: () => ({
   }),

@@ -3,8 +3,9 @@ import io from 'socket.io-client'
 import VueSocketIOExt from 'vue-socket.io-extended'
 
 export default function createSocketConnection(store) {
-  // const socket = io('/')
-  const socket = io('https://chat-helper-be-2.vercel.app')
+  console.log('process.env.VUE_APP_BACKEND_URL U->', process.env.VUE_APP_BACKEND_URL)
+
+  const socket = io(process.env.VUE_APP_BACKEND_URL)
   Vue.use(VueSocketIOExt, socket)
 
   socket.on('my_event', (data) => {
@@ -38,6 +39,10 @@ export default function createSocketConnection(store) {
 
   socket.on('chatsData', (data) => {
     store.dispatch('action_set_chat', data)
+  })
+
+  socket.on('chat_message', (data) => {
+    console.log('socket.js-chat_message-data->', data)
   })
 
   // ----------------------------------------------------------------
@@ -78,21 +83,9 @@ export default function createSocketConnection(store) {
     }).catch(errorHandler)
   }
 
-  function examChatObject() {
+  function inspectChatObject() {
     return new Promise((resolve, reject) => {
-      socket.emit('examChatObject', res => {
-        if (res.error) {
-          reject(res.error)
-        } else {
-          resolve(res)
-        }
-      })
-    }).catch(errorHandler)
-  }
-
-  function getExceptionInfo() {
-    return new Promise((resolve, reject) => {
-      socket.emit('getExceptionInfo', res => {
+      socket.emit('inspectChatObject', res => {
         if (res.error) {
           reject(res.error)
         } else {
@@ -105,30 +98,6 @@ export default function createSocketConnection(store) {
   function createChatObject() {
     return new Promise((resolve, reject) => {
       socket.emit('createChatObject', res => {
-        if (res.error) {
-          reject(res.error)
-        } else {
-          resolve(res)
-        }
-      })
-    }).catch(errorHandler)
-  }
-
-  function deleteChatObject() {
-    return new Promise((resolve, reject) => {
-      socket.emit('deleteChatObject', res => {
-        if (res.error) {
-          reject(res.error)
-        } else {
-          resolve(res)
-        }
-      })
-    }).catch(errorHandler)
-  }
-
-  function pauseAlive(bool) {
-    return new Promise((resolve, reject) => {
-      socket.emit('pauseAlive', bool, res => {
         if (res.error) {
           reject(res.error)
         } else {
@@ -174,18 +143,6 @@ export default function createSocketConnection(store) {
     }).catch(errorHandler)
   }
 
-  function initProcess(params) {
-    return new Promise((resolve, reject) => {
-      socket.emit('initProcess', params, res => {
-        if (res.error) {
-          reject(res.error)
-        } else {
-          resolve(res)
-        }
-      })
-    }).catch(errorHandler)
-  }
-
   function startProcess() {
     return new Promise((resolve, reject) => {
       socket.emit('startProcess', res => {
@@ -212,16 +169,12 @@ export default function createSocketConnection(store) {
     sendEvent,
     userEnter,
     userLeave,
-    examChatObject,
-    getExceptionInfo,
+    inspectChatObject,
     createChatObject,
-    deleteChatObject,
-    pauseAlive,
+    startProcess,
     terminateProcess,
     updateVid,
     updateChatSpeed,
-    initProcess,
-    startProcess,
     disconnect
   }
 }

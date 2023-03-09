@@ -1,5 +1,5 @@
 <template>
-  <div class="VscrollBigBox">
+  <div class="VscrollBigBox scrollable-element">
     <virtual-list
       ref="vsl1"
       class="list-dynamic scroll-touch customization"
@@ -16,7 +16,6 @@
     />
   </div>
 </template>
-
 <script>
 import VirtualList from 'vue-virtual-scroll-list'
 import Item from './VscrollItem.vue'
@@ -27,40 +26,41 @@ export default {
   data() {
     return {
       itemComponent: Item
-      // lastestNonEmptyChatsLength: 0
     }
   },
   computed: {
     modChats() {
-      const tempX = []
       const chatsArray = this.$store.state.chats
       const startIdx = chatsArray.findIndex(x => x !== undefined)
-      console.log('startIdx->', startIdx)
-
-      if (startIdx !== -1) {
-        for (let i = startIdx; i < chatsArray.length; i++) {
-          tempX.push(chatsArray[i])
-        }
-      }
-
       this.vscrollToBtm()
-
-      return tempX
+      return (startIdx !== -1) ? chatsArray.slice(startIdx) : []
     }
+    // modChats() {
+    //   const tempX = []
+    //   const chatsArray = this.$store.state.chats
+    //   const startIdx = chatsArray.findIndex(x => x !== undefined)
+    //   console.log('startIdx->', startIdx)
+    //   if (startIdx !== -1) {
+    //     for (let i = startIdx; i < chatsArray.length; i++) {
+    //       tempX.push(chatsArray[i])
+    //     }
+    //   }
+    //   this.vscrollToBtm()
+    //   return tempX
+    // }
   },
 
   methods: {
+    // 获取newChatsLength的index.参考Get the designated item size by id (from data-key value).
     addItemClass(index) {
-      // 获取newChatsLength的 index 参考Get the designated item size by id (from data-key value).
-      // https://github.com/tangbc/vue-virtual-scroll-list
-      return (index >= this.modChats.length - this.$store.state.newChatsLength) ? 'newChatsClass' : ''
+      const newChatsLength = this.$store.state.newChatsLength
+      return (index >= this.modChats.length - newChatsLength) ? 'newChatsClass' : ''
     },
     vscrollToBtm() {
-      if (this.$store.state.user_settings === null || this.$refs.vsl1 === undefined) return
-
-      this.$refs.vsl1.scrollToBottom()
-
-      console.log('scrollToBottom +1')
+      const refs = this.$refs
+      if (this.$store.state.user_settings && refs.vsl1) {
+        refs.vsl1.scrollToBottom()
+      }
     },
     scrollfunc() {
       console.log('scrollfunc()')
@@ -71,8 +71,11 @@ export default {
   }
 }
 </script>
+<style scoped>
+.scrollable-element {
+  scroll-behavior: smooth;
+}
 
-<style>
 .list-dynamic {
   border: 2px solid;
   border-radius: 3px;
