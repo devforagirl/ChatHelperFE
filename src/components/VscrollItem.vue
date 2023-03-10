@@ -30,7 +30,6 @@
         @click.stop="contentClick()"
       >
         <msgExComp :msgexarray="source.messageEx" />
-        <!-- {{ index }} - {{ 'newChatsLength->'+newChatsLength }} -->
       </div>
     </div>
   </div>
@@ -69,10 +68,7 @@ export default {
       return this.source.author.name
     }
   },
-  mounted() {
-    // stringToColor最好在每天留言收到时处理，这里直接显示，就省去了每次渲染时，重复计算
-    // const result = this.stringToColor(this.source.author.channelId)
-  },
+  mounted() { },
   methods: {
     contentClick() {
       console.log('contentClick()')
@@ -82,7 +78,7 @@ export default {
       this.$router.push('/dashboard/dialog/chat')
     },
     avatarClick() {
-      console.log('@@@avatarClick()')
+      console.log('avatarClick()')
     }
   }
 }
@@ -100,13 +96,6 @@ export default {
   padding: 1px 2px 1px 4px;
   border-radius: 2px;
 }
-
-/* .newChats {
-  background-color: rgba(252, 101, 0, 0.6);
-} */
-
-/* .textContentBox {
-} */
 
 .avatarPic {
   display: inline-block;

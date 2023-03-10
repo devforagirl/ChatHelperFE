@@ -5,18 +5,15 @@
       dark
       color="primary"
     >
-      <v-icon :color="newChatsLength !==0 ? 'green' : 'grey'">mdi-message</v-icon>
-      <div
-        class="msgStat"
-        @click="toggleFlagMsgStat"
-      >
-        <span v-if="flagMsgStat">{{ chats.length }} </span>
-        <span v-else>+{{ newChatsLength }} </span>
-      </div>
+
+      <NumberComp />
+
       <v-spacer />
+
       <div class="connectedUsers">
-        connected users: {{ roomInfo.length }}
+        usr: {{ roomInfo.length }}
       </div>
+
       <v-chip
         v-if="socket?socket.socket.connected:false"
         color="green"
@@ -36,25 +33,9 @@
         x-small
         @click="btnClickDiscChip"
       >disc</v-chip>
+
       <v-spacer />
-      <v-chip
-        v-if="videoType==='live'"
-        color="orange"
-        filter
-        label
-        pill
-        outlined
-        x-small
-      >live</v-chip>
-      <v-chip
-        v-if="videoType==='replay'"
-        color="blue"
-        filter
-        label
-        pill
-        outlined
-        x-small
-      >rep</v-chip>
+
       <v-icon>mdi-wifi-strength-4</v-icon>
       <v-icon>mdi-signal-cellular-outline</v-icon>
       <v-icon>mdi-battery</v-icon>
@@ -65,15 +46,18 @@
 </template>
 
 <script>
+import NumberComp from './NumberComp.vue'
 import { mapState } from 'vuex'
+
 export default {
+  components: { NumberComp },
   data() {
     return {
       flagMsgStat: false
     }
   },
   computed: {
-    ...mapState(['chats', 'newChatsLength', 'flagServerOnline', 'videoType', 'socket', 'roomInfo', 'msgConnectError'])
+    ...mapState(['chats', 'newChatsLength', 'socket', 'roomInfo', 'msgConnectError'])
   },
   methods: {
     toggleFlagMsgStat() {

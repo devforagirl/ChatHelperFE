@@ -35,26 +35,15 @@ export default {
       this.vscrollToBtm()
       return (startIdx !== -1) ? chatsArray.slice(startIdx) : []
     }
-    // modChats() {
-    //   const tempX = []
-    //   const chatsArray = this.$store.state.chats
-    //   const startIdx = chatsArray.findIndex(x => x !== undefined)
-    //   console.log('startIdx->', startIdx)
-    //   if (startIdx !== -1) {
-    //     for (let i = startIdx; i < chatsArray.length; i++) {
-    //       tempX.push(chatsArray[i])
-    //     }
-    //   }
-    //   this.vscrollToBtm()
-    //   return tempX
-    // }
   },
 
   methods: {
     // 获取newChatsLength的index.参考Get the designated item size by id (from data-key value).
     addItemClass(index) {
       const newChatsLength = this.$store.state.newChatsLength
-      return (index >= this.modChats.length - newChatsLength) ? 'newChatsClass' : ''
+      const chatsLength = this.$store.state.chats.length
+
+      return (index >= chatsLength - newChatsLength) ? 'newChatsClass' : ''
     },
     vscrollToBtm() {
       const refs = this.$refs
@@ -63,15 +52,15 @@ export default {
       }
     },
     scrollfunc() {
-      console.log('scrollfunc()')
+      // console.log('scrollfunc()')
     },
     totopfunc() {
-      console.log('totopfunc()')
+      // console.log('totopfunc()')
     }
   }
 }
 </script>
-<style scoped>
+<style>
 .scrollable-element {
   scroll-behavior: smooth;
 }
@@ -88,14 +77,15 @@ export default {
   margin: 10px 0;
 }
 
+.newChatsClass {
+  margin: 0;
+  background-color: rgba(121, 247, 138, 0.7);
+}
+
 .customization {
   border-color: rgb(255, 0, 0);
   width: 100%;
   height: 100vh;
 }
 
-.newChatsClass {
-  margin: 0;
-  background-color: rgba(121, 247, 138, 0.7);
-}
 </style>

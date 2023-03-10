@@ -21,6 +21,7 @@ export default new Vuex.Store({
     },
     chats: [],
     newChatsLength: 0,
+    sumChatsLength: 0,
     msgConnectError: null,
     dialChatData: {},
     latestChatData: [],
@@ -33,10 +34,11 @@ export default new Vuex.Store({
     // F6NpHh0ItgU    pytchat.exceptions.NoContents: Chat data stream is empty.
     arrException: [],
     flagScrollToBottom: true,
-    flagServerOnline: false,
     flagDialog: false,
     flagDrawer: false,
     flagDrawerVisibility: false,
+    flagAniText: false, // systembar的transition
+    flagBGText: true, // systembar的垫底文本
     userName: '',
     userSounds: [],
     errorLogs: [],
@@ -54,11 +56,9 @@ export default new Vuex.Store({
     user_viewers: null,
     curr_user_viewer: null,
     viewer_chat: [],
-    isNewUser: true,
-    videoType: ''
+    isNewUser: true
   },
   mutations: {
-    // test5
     setSocket(state, socket) {
       state.socket = socket
     },
@@ -76,7 +76,6 @@ export default new Vuex.Store({
     updateData(state, data) {
       state.data = data
     },
-    //
     change_flag_ScrollToBottom(state) {
       state.user_settings.flagScrollToBottom = !state.user_settings.flagScrollToBottom
       this.dispatch('saveToDb_userSettings')
@@ -88,16 +87,6 @@ export default new Vuex.Store({
     change_flag_TimeDisplayFormat(state) {
       state.user_settings.flagTimeDisplayFormat = !state.user_settings.flagTimeDisplayFormat
       this.dispatch('saveToDb_userSettings')
-    },
-    set_chatsSpeed(state, seconds) {
-      state.user_settings.chatsSpeed = seconds
-      this.dispatch('saveToDb_userSettings')
-    },
-    set_numStoredChats(state, num) {
-      state.user_settings.numStoredChats = num
-      this.dispatch('saveToDb_userSettings')
-
-      state.chats = []
     },
     change_flagDialog(state, flag) {
       state.flagDialog = flag
@@ -111,15 +100,21 @@ export default new Vuex.Store({
       state.flagDrawerVisibility = flag
       console.log('vuex-flagDrawerVisibility->', flag)
     },
-    // 服务器端是否停止了运行，注意不是是否发生错误。*不用放user_settings
-    mutation_change_flagServerOnline(state, flag) {
-      state.flagServerOnline = flag
+    set_flagAniText(state, flag) {
+      state.flagAniText = flag
+    },
+    set_flagBGText(state, flag) {
+      state.flagBGText = flag
+    },
+    set_chatsSpeed(state, seconds) {
+      state.user_settings.chatsSpeed = seconds
+      this.dispatch('saveToDb_userSettings')
+    },
+    set_numStoredChats(state, num) {
+      state.user_settings.numStoredChats = num
+      this.dispatch('saveToDb_userSettings')
 
-      if (flag) {
-        Vue.$toast.success('Server is ONLINE...')
-      } else {
-        Vue.$toast.error('Server is OFFLINE...', { duration: 10000 })
-      }
+      state.chats = []
     },
 
     set_DialChatData(state, data) {
@@ -139,13 +134,6 @@ export default new Vuex.Store({
     set_videoIdAddress(state, string) {
       state.videoIdAddress = string
     },
-    set_videoType(state, bool) {
-      if (bool) {
-        state.videoType = 'replay'
-      } else {
-        state.videoType = 'live'
-      }
-    },
     update_errorLogs(state, obj) {
       state.errorLogs.push(obj)
       // 直接发送到后台保存
@@ -153,23 +141,18 @@ export default new Vuex.Store({
     set_newChatsLength(state, newChatsNum) {
       state.newChatsLength = newChatsNum
 
-      // 留言数量是否太多占内存，是否要清除
+      // chatGPT: Check if we need to remove any chats from the array
       const chatsNum = state.chats.length
       const maxNum = state.user_settings.numStoredChats
-      const startEleIndex = state.chats.findIndex(x => x !== undefined)
 
-      // 1.未到线
-      if (chatsNum - maxNum < 0 || newChatsNum === 0) return
+      if (chatsNum - maxNum > 0 && newChatsNum !== 0) {
+        const chatsToRemove = newChatsNum > chatsNum - maxNum ? chatsNum - maxNum : newChatsNum
 
-      // 2.跨线，只会发生一次，确保有效数据个数为maxNum个
-      if (chatsNum - maxNum < newChatsNum) {
-        for (let i = 0; i < chatsNum - maxNum; i++) delete state.chats[startEleIndex + i]
-
-        return
+        state.chats.splice(0, chatsToRemove)
       }
-
-      // 3.大于线后，一直走这条了
-      for (let i = 0; i < newChatsNum; i++) delete state.chats[startEleIndex + i]
+    },
+    set_sumChatsLength(state, newChatsNum) {
+      state.sumChatsLength += newChatsNum
     },
     set_chats(state, chatEle) {
       // 1.生成留言者专属color Hex值
@@ -460,6 +443,7 @@ export default new Vuex.Store({
     action_set_chat(context, chat) {
       const chatsArray = JSON.parse(chat)
       const chatsLength = chatsArray.length
+      console.log('chatsLength->', chatsLength)
 
       if (chatsLength !== 0) {
         chatsArray.forEach(element => {
@@ -471,8 +455,14 @@ export default new Vuex.Store({
       }
 
       // 3 存贮最新留言数长度
-      console.log('chatsLength->', chatsLength)
       context.commit('set_newChatsLength', chatsLength)
+
+      // 4 增加留言数长度
+      context.commit('set_sumChatsLength', chatsLength)
+
+      // 5 activate systembar animation
+      context.commit('set_flagAniText', true)
+      context.commit('set_flagBGText', false)
     },
     action_get_viewerChats(context, viewerId) {
       context.commit('SET_VIEWER_CHAT_DATA', [])
@@ -573,8 +563,6 @@ export default new Vuex.Store({
       switch (beRes.req_name) {
         case 'startProcess': {
           // 暂无任何返回值
-
-          // context.commit('set_videoType', beRes.vid_is_replay)
 
           // const html1 =
           //   '<b>' + beRes.req_name + '</b><br>' +
