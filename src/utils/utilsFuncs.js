@@ -42,3 +42,8 @@ export function socketStatus() {
   Vue.$toast.default('Not connected yet', { duration: 5000 })
   return false
 }
+
+// 利用 ES6 Set 去重（ES6 中最常用）
+// unique(arr) {
+//   return Array.from(new Set(arr))
+// },

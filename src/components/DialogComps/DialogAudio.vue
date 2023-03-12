@@ -2,19 +2,10 @@
   <div class="audioCompBigBox">
     <v-card>
       <div class="audioCompInnerBox">
-        <div class="categoriesBox">
-          <div
-            v-for="item in userSoundUniqueCategories"
-            :key="item"
-            class="categoriesitem"
-            @click="categoryBtnClick(item)"
-          >{{ item.substring(0,5) }}</div>
-        </div>
-
         <div class="itemsBox">
           <div
-            v-for="item in selectedSoundItems"
-            :key="item.id"
+            v-for="(item, index) in user_audios"
+            :key="index"
             class="itemBox"
           >
             <v-btn
@@ -32,7 +23,7 @@
                 mdi-play
               </v-icon>
             </v-btn>
-            <span class="itemText">{{ item.name }}</span>
+            <span class="itemText">{{ item.audio_id }}</span>
           </div>
 
         </div>
@@ -42,6 +33,15 @@
 </template>
 
 <script>
+// TODO:
+// 进入dashboard时，audios传入全部的audio，但均不含data
+// 上一步请求完成后，再根据某user的需求，以audio_id请求部分的audio_data存在LS.
+// *user的需求包括，audio_id和对应的audio_note
+// 在audio dialogue分为左侧的display tab 和 modify tab, 可横向无缝切换。
+// 用户在display tab点击'播放按钮id数字'时，axios远程请求，存入ls，复制id进入剪贴板，试听后， 在audio tab 设定某个音效时，粘贴出来。
+// 每行末尾，可以修改备注。切换到display里修改。
+// 在display tab里，增加"add"按钮，切换到modify tab里创建。
+
 import { mapState } from 'vuex'
 
 export default {
@@ -53,42 +53,22 @@ export default {
     return {
       audio: Object,
       audioBlob: Object,
-      audioPromise: Promise,
-      tab: null,
-      selectedSoundItems: []
+      audioPromise: Promise
     }
   },
   computed: {
-    ...mapState(['userSounds']),
-    userSoundUniqueCategories: {
-      get() {
-        const categories = this.$store.state.userSounds.map((x) => {
-          return x.category
-        })
-
-        return this.unique(categories)
-      }
-    }
+    ...mapState(['user_audios'])
   },
   mounted() {
-    this.categoryBtnClick('general')
     // 音效用
     this.audio1 = new Audio()
     // 语音用
     this.audio2 = new Audio()
   },
   methods: {
-    // 利用 ES6 Set 去重（ES6 中最常用）
-    unique(arr) {
-      return Array.from(new Set(arr))
-    },
-    categoryBtnClick(ctg) {
-      this.selectedSoundItems = this.userSounds.filter((item) => {
-        return item.category === ctg
-      })
-    },
     soundItemBtnClick(item) {
-      const xyz = localStorage.getItem(item.id)
+      const xyz = localStorage.getItem(item.audio_id)
+
       if (xyz) {
         try {
           const currSound = JSON.parse(xyz)
@@ -102,8 +82,8 @@ export default {
     },
     // 纯js播放音频
     playAudio(sound) {
-      const audioBlob = this.dataURLtoBlob(sound.base64data)
-
+      const audioBlob = this.dataURLtoBlob(sound)
+      console.log('audioBlob->', audioBlob)
       const blobUrl = window.URL.createObjectURL(audioBlob)
 
       if (sound.category === 'effect') {
@@ -142,9 +122,6 @@ export default {
 </script>
 
 <style>
-.alertBox {
-  /* 警告提示框的定位问题 搜索'v-alert使用' */
-}
 .audioCompBigBox {
   height: 300px;
 }
@@ -153,25 +130,6 @@ export default {
   display: flex;
   flex-direction: row;
   justify-content: space-evenly;
-}
-
-.categoriesBox {
-  height: 300px;
-  overflow-y: auto;
-  width: 30%;
-  display: flex;
-  flex-direction: column;
-  justify-content: top;
-  align-items: left;
-  /* padding: 0 0 0 8px; */
-  /* background-color: rgb(203, 160, 243); */
-}
-
-.categoriesitem {
-  padding: 10px 0 0 8px;
-  margin-bottom: 2px;
-  /* border: 2px red solid; */
-  background-color: rgb(230, 243, 196);
 }
 
 .itemsBox {
@@ -196,25 +154,5 @@ export default {
 
 .itemText {
   font-size: 14px;
-}
-
-.categoryTabsColumn {
-  max-width: 30%;
-}
-
-.detailTabsColumn {
-  width: 70%;
-}
-
-.networkCompBigBox {
-  width: 100%;
-}
-
-.tabInCard {
-  /* 选定的tab小色块 */
-  background-color: rgb(240, 206, 14);
-  height: 200px;
-  padding: 10px;
-  overflow-y: auto;
 }
 </style>

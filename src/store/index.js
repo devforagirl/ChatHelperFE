@@ -40,7 +40,6 @@ export default new Vuex.Store({
     flagAniText: false, // systembar的transition
     flagBGText: true, // systembar的垫底文本
     userName: '',
-    userSounds: [],
     errorLogs: [],
     user_info: null,
     user_settings: null,
@@ -208,23 +207,24 @@ export default new Vuex.Store({
       console.log('mutation_set_userInfoData->', userInfoData)
     },
     set_userAppData(state, userSettingData) {
-      // 1.user_settings
+      // 1.Settings
       // 只存vuex
       state.user_settings = JSON.parse(userSettingData.usersetting.user_settings)
 
-      // 2.user_audios
+      // 2.Audios
       const data1 = userSettingData.audios
 
       data1.map((x) => {
         // 2-1 LS 存audio_id和audio_data
         localStorage.setItem(x.audio_id, JSON.stringify(x.audio_data))
-        // 2-2 vuex 存全部除了audio_data
+        // 2-2 vuex 存全部,除了audio_data
+        // 注意，这时候是userSettingData的audio_data也被删除了
         return delete x.audio_data
       })
 
       state.user_audios = data1
 
-      // 3.user_viewers
+      // 3.Viewers
       // 只存vuex
       state.user_viewers = userSettingData.viewers
 
